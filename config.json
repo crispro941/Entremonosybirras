@@ -1,0 +1,24 @@
+{
+    "pageTitle": "Catálogo de Churrascos",
+    "whatsappNumber": "56932055661",
+    "customMessage": "Hola, me gustaría hacer el siguiente pedido:",
+    "products": [
+        {
+            "id": "1",
+            "name": "Churrasco Completo",
+            "description": "Churrasco con todos los ingredientes."
+        },
+        {
+            "id": "2",
+            "name": "Churrasco Simple",
+            "description": "Churrasco sin adiciones."
+        },
+        {
+            "id": "3",
+            "name": "Churrasco con Papas",
+            "description": "Churrasco acompañado de papas fritas."
+        }
+    ],
+    "logo": "url_del_logo",
+    "qr": "url_del_qr"
+}
