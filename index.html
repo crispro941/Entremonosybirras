@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Catálogo de Productos</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f4f4f4;
+        }
+        h1 {
+            text-align: center;
+        }
+        .product {
+            border: 1px solid #ccc;
+            padding: 10px;
+            margin: 10px 0;
+            background: #fff;
+        }
+        .product input {
+            margin: 5px 0;
+        }
+        #cart {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+
+    <h1 id="page-title"></h1>
+    <div id="products"></div>
+
+    <div id="cart">
+        <h2>Tu Pedido</h2>
+        <ul id="cart-items"></ul>
+        <button id="send-whatsapp">Enviar Pedido por WhatsApp</button>
+    </div>
+
+    <script>
+        // Cargar configuración desde config.json
+        fetch('config.json')
+            .then(response => response.json())
+            .then(config => {
+                document.getElementById('page-title').innerText = config.pageTitle;
+                const productsContainer = document.getElementById('products');
+                config.products.forEach(product => {
+                    const productDiv = document.createElement('div');
+                    productDiv.className = 'product';
+                    productDiv.innerHTML = `
+                        <h3>${product.name}</h3>
+                        <p>${product.description}</p>
+                        <input type="text" placeholder="Instrucciones (ej. sin mayonesa)" id="input-${product.id}">
+                        <button onclick="addToCart('${product.name}', '${product.id}')">Agregar al Pedido</button>
+                    `;
+                    productsContainer.appendChild(productDiv);
+                });
+            });
+
+        const cart = [];
+
+        function addToCart(productName, productId) {
+            const instructions = document.getElementById(`input-${productId}`).value;
+            cart.push({ name: productName, instructions: instructions });
+            updateCart();
+        }
+
+        function updateCart() {
+            const cartItems = document.getElementById('cart-items');
+            cartItems.innerHTML = '';
+            cart.forEach(item => {
+                const li = document.createElement('li');
+                li.innerText = `${item.name} - ${item.instructions}`;
+                cartItems.appendChild(li);
+            });
+        }
+
+        document.getElementById('send-whatsapp').addEventListener('click', () => {
+            if (cart.length === 0) {
+                alert('No hay productos en el pedido.');
+                return;
+            }
+            const config = JSON.parse(localStorage.getItem('config'));
+            const message = cart.map(item => `${item.name} - ${item.instructions}`).join('%0A');
+            const whatsappUrl = `https://wa.me/${config.whatsappNumber}?text=${config.customMessage}%0A${message}`;
+            window.open(whatsappUrl, '_blank');
+        });
+    </script>
+</body>
+</html>
